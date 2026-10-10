@@ -1,0 +1,3 @@
+[submodule "virions/arithmexp"]
+	path = virions/arithmexp
+	url = https://github.com/NhanAZ-Libraries/arithmexp.git

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NhanAZ\Calculator;
 
+use muqsit\arithmexp\expression\Expression;
 use pocketmine\player\Player;
 
 final class CalculatorSession {
@@ -17,7 +18,7 @@ final class CalculatorSession {
 	 */
 	public function __construct(
 		private readonly Player $player,
-		private readonly object $expression,
+		private readonly Expression $expression,
 		private readonly array $expressionVariables,
 		private readonly array $missingVariables,
 		private array $values,
@@ -27,7 +28,7 @@ final class CalculatorSession {
 		return $this->player;
 	}
 
-	public function getExpression(): object {
+	public function getExpression(): Expression {
 		return $this->expression;
 	}
 

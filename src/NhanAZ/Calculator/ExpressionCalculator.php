@@ -6,6 +6,7 @@ namespace NhanAZ\Calculator;
 
 use InvalidArgumentException;
 use muqsit\arithmexp\Parser;
+use muqsit\arithmexp\expression\Expression;
 use Throwable;
 
 final class ExpressionCalculator {
@@ -94,21 +95,18 @@ final class ExpressionCalculator {
 		return new CalculatorRequest($expression, $rawValues);
 	}
 
-	public function parse(string $expression): object {
+	public function parse(string $expression): Expression {
 		return $this->getParser()->parse($expression);
 	}
 
 	/** @param array<string, int|float|bool> $values */
-	public function evaluate(object $expression, array $values = []): mixed {
+	public function evaluate(Expression $expression, array $values = []): int|float|bool {
 		return $expression->evaluate($values);
 	}
 
 	/** @param array<string, int|float|bool> $values */
 	public function evaluateValue(string $valueExpression, array $values = []): int|float|bool {
 		$value = $this->evaluate($this->parse($valueExpression), $values);
-		if (!is_int($value) && !is_float($value) && !is_bool($value)) {
-			throw new InvalidArgumentException("The value must evaluate to a number or boolean.");
-		}
 		return $value;
 	}
 

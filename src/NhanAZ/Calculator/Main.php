@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace NhanAZ\Calculator;
 
-use NhanAZ\libBedrock\Sounder;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\ClosureTask;
@@ -43,7 +43,7 @@ class Main extends PluginBase implements Listener {
 		}
 
 		try {
-			$request = $this->calculator->createRequest($args);
+			$request = $this->calculator->createRequest(array_values($args));
 			$expression = $this->calculator->parse($request->expression);
 			$values = $this->calculator->resolveProvidedValues($request->rawValues);
 			$variables = $this->calculator->extractVariables($request->expression);
@@ -90,7 +90,7 @@ class Main extends PluginBase implements Listener {
 			return;
 		}
 
-		$event->setCancelled();
+		$event->cancel();
 		$message = trim($event->getMessage());
 		if (strtolower($message) === "cancel") {
 			unset($this->variableSessions[$sessionId]);
@@ -134,7 +134,8 @@ class Main extends PluginBase implements Listener {
 	}
 
 	private function scheduleSessionTimeout(string $sessionId): void {
-		$timeoutSeconds = max(1, (int) $this->getConfig()->get("variableTimeoutSeconds", 60));
+		$configuredTimeout = $this->getConfig()->get('variableTimeoutSeconds', 60);
+		$timeoutSeconds = is_int($configuredTimeout) && $configuredTimeout > 0 ? $configuredTimeout : 60;
 		$this->getScheduler()->scheduleDelayedTask(new ClosureTask(function() use ($sessionId): void {
 			$session = $this->variableSessions[$sessionId] ?? null;
 			if ($session === null) {
@@ -157,16 +158,17 @@ class Main extends PluginBase implements Listener {
 	}
 
 	/** @param array<string, int|float|bool> $variables */
-	private function sendResult(CommandSender $sender, mixed $result, array $variables = []): void {
+	private function sendResult(CommandSender $sender, int|float|bool $result, array $variables = []): void {
+		$resultText = is_bool($result) ? ($result ? 'true' : 'false') : (string) $result;
 		if ((bool) $this->getConfig()->get("showDataType", true)) {
-			$result = gettype($result) . "({$result})";
+			$resultText = gettype($result) . "({$resultText})";
 		}
 		if (count($variables) > 0) {
-			$result .= " where " . $this->formatVariables($variables);
+			$resultText .= " where " . $this->formatVariables($variables);
 		}
 
 		$this->sendConfiguredMessage($sender, "result", "{prefix} &aResult: &b{result}", [
-			"result" => (string) $result,
+			"result" => $resultText,
 		]);
 		$this->playSound($sender, true);
 	}
@@ -204,8 +206,10 @@ class Main extends PluginBase implements Listener {
 
 	/** @param array<string, string> $values */
 	private function sendConfiguredMessage(CommandSender $sender, string $configKey, string $fallback, array $values = []): void {
-		$message = (string) $this->getConfig()->get($configKey, $fallback);
-		$replacements = ["{prefix}" => (string) $this->getConfig()->get("prefix", "&f[&6Calculator&f]&r")];
+		$configuredMessage = $this->getConfig()->get($configKey, $fallback);
+		$message = is_string($configuredMessage) ? $configuredMessage : $fallback;
+		$configuredPrefix = $this->getConfig()->get('prefix', '&f[&6Calculator&f]&r');
+		$replacements = ["{prefix}" => is_string($configuredPrefix) ? $configuredPrefix : '&f[&6Calculator&f]&r'];
 		foreach ($values as $key => $value) {
 			$replacements["{{$key}}"] = $value;
 		}
@@ -213,8 +217,16 @@ class Main extends PluginBase implements Listener {
 	}
 
 	private function playSound(CommandSender $sender, bool $success): void {
-		if ((bool) $this->getConfig()->get("playSound", true)) {
-			Sounder::play($sender, $success ? "mob.villager.yes" : "mob.villager.no");
+		if ($sender instanceof Player && $this->getConfig()->get('playSound', true) === true) {
+			$position = $sender->getPosition();
+			$packet = new PlaySoundPacket();
+			$packet->soundName = $success ? 'mob.villager.yes' : 'mob.villager.no';
+			$packet->x = $position->getX();
+			$packet->y = $position->getY();
+			$packet->z = $position->getZ();
+			$packet->volume = 1.0;
+			$packet->pitch = 1.0;
+			$sender->getNetworkSession()->sendDataPacket($packet);
 		}
 	}
 

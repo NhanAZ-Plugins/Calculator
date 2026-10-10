@@ -1,76 +1,40 @@
-# General
-**Execute math expressions in the server or console on PocketMine-MP servers with `/calculator` command**
+# Calculator
 
-![EgImg](https://user-images.githubusercontent.com/60387689/199899361-3511a439-e121-42e6-bb65-0d96f7d63196.png)
+Calculator is an Axolotl-PM plugin that evaluates mathematical expressions from the server console or the `/calculator` command. It uses the [arithmexp parser](https://github.com/Muqsit/arithmexp), which supports arithmetic, comparisons, constants, functions, and variables.
 
-# Arithmetic Operators
-- List of supported arithmetic operators: `/`, `*`, `+`, `-`, `**`, `%`.  
-- Description of arithmetic operators: https://github.com/Muqsit/arithmexp/wiki/Operator
-- Eg: `/calculator 1 + (2 - 3) * 4 / 5` > Result: `0.2`
+![Calculator command example](https://user-images.githubusercontent.com/60387689/199899361-3511-a439-e121-42e6-bb65-0d96f7d63196.png)
 
-# Constants
-- List of supported constants: `e`, `euler`, `false`, `inf`, `log2e`, `log10e`, `ln2`, `ln10`, `lnpi`, `pi`, `nan`, `pi2`, `pi4`, `m_1pi`, `m_2pi`, `m_2sqrtpi`, `sqrtpi`, `sqrt2`, `sqrt3`, `sqrt12`, `true`.  
-- Description of constants: https://github.com/Muqsit/arithmexp/wiki/Constant
-- Eg: `/calculator 3**2 * pi` > Result: `28.2`
+## Requirements and compatibility
 
-# Math functions
-- List of supported math functions: `abs()`, `acos()`, `acosh()`, `asin()`, `asinh()`, `atan2()`, `atan()`, `atanh()`, `boolval()`, `ceil()`, `cos()`, `cosh()`, `deg2rad()`, `exp()`, `expm1()`, `fdiv()`, `floatval()`, `floor()`, `fmod()`, `hypot()`, `intdiv()`, `intval()`, `is_bool()`, `is_float()`, `is_finite()`, `is_infinite()`, `is_nan()`, `lcg_value()`, `log10()`, `log1p()`, `log()`, `max()`, `min()`, `mt_getrandmax()`, `mt_rand()`, `pi()`, `pow()`, `rad2deg()`, `round()`, `sin()`, `sinh()`, `sqrt()`, `tan()`, `tanh()`.  
-- Description of math functions: https://github.com/Muqsit/arithmexp/wiki/Function
-- Eg: `/calculator sqrt(369)` > Result: `19.2`
+- Axolotl-PM with plugin API 5.0.0 or later in the 5.x API series.
+- PHP 8.1 or later with the extensions supplied by Axolotl-PM.
 
-# Operator
-- List of supported operator: `+`, `/`, `==`, `**`, `>`, `>=`, `===`, `<`, `<=`, `&&`, `||`, `and`, `or`, `xor`, `%`, `*`, `!=`, `!==`, `<=>`, `-`, `!`, `-`, `+`.  
-- Description of operator: https://github.com/Muqsit/arithmexp/wiki/Operator
-- Eg: `/calculator 1 + 2 == 3` > Result: `true`
+The manifest declares API 5.0.0. Static analysis has passed against Axolotl-PM source 5.0.0 and the pinned source in [the build workflow](.github/workflows/build.yml). The current branch is still undergoing dependency validation. It has no stable release or claim of compatibility with every intermediate Axolotl-PM 5.x version.
 
-# Variables
-- Pass values directly with `--variable=value`: `/calculator x + 1 --x=3` > Result: `4`.
-- Multiple variables are supported: `/calculator x * y + 1 --x=3 --y=4` > Result: `13`.
-- If a variable has no value in the command, the player is prompted in chat. Type `cancel` to cancel.
-- Variable values can also be expressions without spaces, such as `/calculator x + 1 --x=pi/4`.
-- Console commands must provide all variable values directly because the console cannot answer chat prompts.
+## Usage
 
-# Commands & Permissions
-```yaml
-commands:
-  calculator:
-    description: "Perform a math operation"
-    usage: "/calculator <expression>"
-    permission: calculator.command
-    aliases: ["calc"]
-permissions:
-  calculator.command:
-    default: true
-    description: "Allows the use of /calculator"
+Run `/calculator <expression>` or `/calc <expression>`. The permission is `calculator.command`, granted by default. Console commands work without a player. Examples follow.
+
+```text
+/calculator 1 + (2 - 3) * 4 / 5
+/calc 3 ** 2 * pi
+/calculator x + y --x=2 --y=3
 ```
 
-# Config
-```yaml
----
-# Prefix of messages.
-prefix: "&f[&6Calculator&f]&r"
+When a player leaves a variable unspecified, the plugin asks for its value in chat. Type `cancel` to end that session. Console callers must supply every variable with `--name=value`. A supplied value can reference another variable if it can be resolved, as in `--x=2 --y=x*4`.
 
-# {prefix} : Prefix.
-# {result} : The result of the math.
-result: "{prefix} &aResult: &b{result}"
+See the [arithmexp documentation](https://github.com/Muqsit/arithmexp/wiki) for the supported operators, functions, constants, and expression syntax. The parser evaluates expressions without PHP `eval`.
 
-# {prefix} : Prefix.
-# {error} : Error information.
-error: "{prefix} &cError: {error}"
+## Configuration
 
-# playSound: true > A sound will be sent to the player when a math expressions is performed.
-playSound: true
+The [`resources/config.yml`](resources/config.yml) file defines message templates, whether results show their data type, whether players hear success or error sounds, and how long an unanswered variable prompt remains active. The console receives messages without player-only sound packets. No stored user data is migrated by this update.
 
-# showDataType: true > The data type will be displayed with the result.
-showDataType: true
+## Build and maintenance
 
-# Config version
-configVersion: "0.0.15"
-...
+The [build workflow](.github/workflows/build.yml) tests expressions, runs PHPStan at maximum level for Calculator, and uses [DevTools](https://github.com/NhanAZ/DevTools) to build and validate a standalone PHAR. A pinned submodule supplies the [NhanAZ-Libraries arithmexp fork](https://github.com/NhanAZ-Libraries/arithmexp), which retains its upstream GPL license and contains a narrow change for safe virion shading. The fork is still awaiting PHPStan max validation across its full source, so no stable Calculator release is available from this branch yet.
 
+Clone with submodules to reproduce the build locally. Workflow and submodule revisions are pinned in source control. GitHub's default workflow run titles identify push runs by commit message.
 
-```
+## License and support
 
-# Contact
-[![Discord](https://img.shields.io/discord/986553214889517088?label=discord&color=7289DA&logo=discord)](https://discord.gg/j2X83ujT6c)\
-**You can contact me directly via Discord `NhanAZ`**
+Calculator and the bundled arithmexp fork use [GPL-3.0](LICENSE). The [upstream project](https://github.com/Muqsit/arithmexp) remains credited. Report bugs through [GitHub issues](https://github.com/NhanAZ-Plugins/Calculator/issues) or join [NhanAZ Discord](https://discord.gg/j2X83ujT6c).
