@@ -34,6 +34,7 @@ check($values === ['x' => 2, 'y' => 8], 'Dependent variables were not resolved')
 check($calculator->extractVariables($request->expression) === ['x', 'y'], 'Variable names were not found');
 check($calculator->evaluate($calculator->parse($request->expression), $values) === 10, 'Expression result changed');
 check($calculator->evaluate($calculator->parse('2 > 3')) === false, 'Boolean false result changed');
+check($calculator->evaluate($calculator->parse('1 !== 2')) === true, 'Strict inequality result changed');
 check($calculator->extractVariables('sqrt(9) + pi + x') === ['x'], 'Functions and constants became variables');
 
 try {
