@@ -31,7 +31,7 @@ The [`resources/config.yml`](resources/config.yml) file defines message template
 
 ## Build and maintenance
 
-The [build workflow](.github/workflows/build.yml) tests expressions, runs PHPStan at maximum level for Calculator, and uses [DevTools](https://github.com/NhanAZ/DevTools) to build and validate a standalone PHAR. A pinned submodule supplies the [NhanAZ-Libraries arithmexp fork](https://github.com/NhanAZ-Libraries/arithmexp), which retains its upstream GPL license and contains a narrow change for safe virion shading. The fork is still awaiting PHPStan max validation across its full source, so no stable Calculator release is available from this branch yet.
+The [build workflow](.github/workflows/build.yml) tests expressions, runs PHPStan at maximum level for Calculator, and uses [DevTools](https://github.com/NhanAZ/DevTools) to build and validate a standalone PHAR. A pinned submodule supplies the [NhanAZ-Libraries arithmexp fork](https://github.com/NhanAZ-Libraries/arithmexp), which retains its upstream GPL license and contains fixes for safe virion shading and arithmetic evaluation. The fork's PHPStan maximum-level run uses two documented, exact-line exceptions for recursive token arrays, backed by a deep-tree regression. A stable Calculator release requires its own verified PHAR and runtime result.
 
 Clone with submodules to reproduce the build locally. Workflow and submodule revisions are pinned in source control. GitHub's default workflow run titles identify push runs by commit message.
 
