@@ -9,7 +9,7 @@ Calculator is an Axolotl-PM plugin that evaluates mathematical expressions from 
 - Axolotl-PM with plugin API 5.0.0 or later in the 5.x API series.
 - PHP 8.1 or later with the extensions supplied by Axolotl-PM.
 
-The manifest declares API 5.0.0. Static analysis has passed against Axolotl-PM source 5.0.0 and the pinned source in [the build workflow](.github/workflows/build.yml). The current branch is still undergoing dependency validation. It has no stable release or claim of compatibility with every intermediate Axolotl-PM 5.x version.
+The manifest declares API 5.0.0. Static analysis has passed against Axolotl-PM source 5.0.0 and the pinned source in [the build workflow](.github/workflows/build.yml). The verified runtime uses one Axolotl-PM 5.x release. These checks do not establish compatibility with every intermediate 5.x version.
 
 ## Usage
 
@@ -31,7 +31,7 @@ The [`resources/config.yml`](resources/config.yml) file defines message template
 
 ## Build and maintenance
 
-The [build workflow](.github/workflows/build.yml) tests expressions, runs PHPStan at maximum level for Calculator, and uses [DevTools](https://github.com/NhanAZ/DevTools) to build and validate a standalone PHAR. A pinned submodule supplies the [NhanAZ-Libraries arithmexp fork](https://github.com/NhanAZ-Libraries/arithmexp), which retains its upstream GPL license and contains fixes for safe virion shading and arithmetic evaluation. The fork's PHPStan maximum-level run uses two documented, exact-line exceptions for recursive token arrays, backed by a deep-tree regression. A stable Calculator release requires its own verified PHAR and runtime result.
+The [build workflow](.github/workflows/build.yml) tests expressions, runs PHPStan at maximum level for Calculator, and uses [DevTools](https://github.com/NhanAZ/DevTools) to build and validate a standalone PHAR. A pinned submodule supplies the [NhanAZ-Libraries arithmexp fork](https://github.com/NhanAZ-Libraries/arithmexp/releases/tag/v1.1.1), which retains its upstream GPL license and contains fixes for safe virion shading and arithmetic evaluation. The fork's PHPStan maximum-level run uses two documented, exact-line exceptions for recursive token arrays, backed by a deep-tree regression. Calculator's hosted PHAR has passed console and connected-client arithmetic, boolean and variable-chat checks on one Axolotl-PM release. See [the changelog](CHANGELOG.md) for rollback guidance.
 
 Clone with submodules to reproduce the build locally. Workflow and submodule revisions are pinned in source control. GitHub's default workflow run titles identify push runs by commit message.
 
