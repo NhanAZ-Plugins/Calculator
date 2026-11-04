@@ -1,8 +1,15 @@
 # Calculator
 
-Calculator is an Axolotl-PM plugin that evaluates mathematical expressions from the server console or the `/calculator` command. It uses the [arithmexp parser](https://github.com/Muqsit/arithmexp), which supports arithmetic, comparisons, constants, functions, and variables.
+Evaluate mathematical expressions with an Axolotl-PM command or server console
 
-![Calculator command example](https://user-images.githubusercontent.com/60387689/199899361-3511-a439-e121-42e6-bb65-0d96f7d63196.png)
+[![CI](https://github.com/NhanAZ-Plugins/Calculator/actions/workflows/build.yml/badge.svg)](https://github.com/NhanAZ-Plugins/Calculator/actions/workflows/build.yml)
+[![Latest release](https://img.shields.io/github/v/release/NhanAZ-Plugins/Calculator)](https://github.com/NhanAZ-Plugins/Calculator/releases/latest)
+[![License](https://img.shields.io/github/license/NhanAZ-Plugins/Calculator)](https://github.com/NhanAZ-Plugins/Calculator/blob/arithmexp/LICENSE)
+[![Discord](https://img.shields.io/discord/986553214889517088?label=Discord&logo=discord&logoColor=white&color=5865F2)](https://discord.gg/j2X83ujT6c)
+
+## Overview
+
+This plugin targets the PocketMine-MP and Axolotl-PM API 5 ecosystem and is maintained under [NhanAZ-Plugins](https://github.com/NhanAZ-Plugins).
 
 ## Requirements and compatibility
 
