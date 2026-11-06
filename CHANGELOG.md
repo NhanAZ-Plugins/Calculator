@@ -2,7 +2,7 @@
 
 ## 0.0.23
 
-- Pin the [NhanAZ-Libraries arithmexp fork v1.1.1](https://github.com/NhanAZ-Libraries/arithmexp/releases/tag/v1.1.1) as the parser virion.
+- Pin the [NhanAZ-Libraries arithmexp fork v1.1.1](https://github.com/AxolotlBucketLabs/arithmexp/releases/tag/v1.1.1) as the parser virion.
 - Build a standalone PHAR with pinned DevTools and include the plugin and parser GPL notices.
 - Keep console and player expression commands, variable prompts and configuration behavior.
 
